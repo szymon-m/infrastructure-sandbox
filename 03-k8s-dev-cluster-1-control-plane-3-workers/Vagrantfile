@@ -1,0 +1,86 @@
+Vagrant.configure(2) do |config|
+
+  config.vm.provision "file", source: "etc/haproxy/haproxy.conf", destination: "~/haproxy.conf"
+  config.vm.provision "file", source: "etc/keepalived/keepalived.conf", destination: "~/keepalived.conf"
+  config.vm.provision "file", source: "etc/keepalived/check_apiserver.sh", destination: "~/check_apiserver.sh"
+  #config.vm.provision "shell", path: "bootstrap.sh"
+  #config.vm.provision "shell", path: "configure.sh" -> file placed in /root/configure.sh
+  
+  # Kubernetes Master Nodes
+  MasterCount = 1
+
+  (1..MasterCount).each do |i|
+
+    config.vm.define "master-0#{i}" do |masternode|
+
+      masternode.vm.box               = "ubuntu-24-04-server-k8s"
+      masternode.vm.box_check_update  = false
+      masternode.vm.box_version       = "0"
+      masternode.vm.hostname          = "master-0#{i}.example.com"
+
+      #masternode.vm.base_address = "10.0.2.10#{i}"
+      #masternode.vm.network "private_network", ip:"192.168.1.10#{i}"
+      #masternode.vm.network "private_network", ip:"10.0.2.10#{i}", virtualbox__intnet: "NatNetwork"
+
+      #(added 01.10.24) - access via bridged network to host's network - turn off enp0s3 interface - and set default route for enp0s8 - by runinng ./setup.sh (as a root)
+      #masternode.vm.network "public_network", ip: "192.168.1.10#{i}", bridge: "enp0s8: Intel(R) Ethernet Connection (11) I219-LM"
+      masternode.vm.network "public_network", ip: "192.168.1.10#{i}", bridge: "Intel(R) Ethernet Connection (11) I219-LM"
+      
+      
+      # (0..1).each do |n|
+      #   masternode.vm.network "forwarded_port", guest: "23#{79+n}", host: "23#{79+n}"        
+      # end
+
+      # masternode.vm.network "forwarded_port", guest: "6443", host: "6443"
+      # masternode.vm.network "forwarded_port", guest: "8001", host: "8001"
+      # (0..2).each do |n|
+      #   masternode.vm.network "forwarded_port", guest: "1025#{n}", host: "1025#{n}"
+      # end
+      # (0..4).each do |n|
+      #   masternode.vm.network "forwarded_port", guest: "3000#{n}", host: "3000#{n}"
+      # end
+
+      masternode.vm.provider :virtualbox do |v|
+        v.name   = "master-0#{i}"
+        v.memory = 8192
+        v.cpus   = 4
+
+      end
+
+    end
+
+  end
+
+
+  # Kubernetes Worker Nodes
+  WorkerCount = 2
+
+  (1..WorkerCount).each do |i|
+
+    config.vm.define "worker-0#{i}" do |workernode|
+
+      workernode.vm.box               = "ubuntu-24-04-server-k8s"
+      workernode.vm.box_check_update  = false
+      workernode.vm.box_version       = "0"
+      workernode.vm.hostname          = "worker-0#{i}.example.com"
+
+      #workernode.vm.base_address = "10.0.2.20#{i}"
+      #workernode.vm.network "private_network", ip: "192.168.1.20#{i}"
+      #workernode.vm.network "private_network", ip: "10.0.2.20#{i}", virtualbox__intnet: "NatNetwork"
+
+      #(added 01.10.24) - access via bridged network to host's network - turn off enp0s3 interface - and set default route for enp0s8 - by runinng ./setup.sh (as a root)
+      #workernode.vm.network "public_network", ip: "192.168.1.20#{i}", bridge: "enp0s8: Intel(R) Ethernet Connection (11) I219-LM"
+      workernode.vm.network "public_network", ip: "192.168.1.20#{i}", bridge: "Intel(R) Ethernet Connection (11) I219-LM"
+
+      workernode.vm.provider :virtualbox do |v|
+        v.name   = "worker-0#{i}"
+        v.memory = 2048
+        v.cpus   = 2
+
+      end
+
+    end
+
+  end
+
+end

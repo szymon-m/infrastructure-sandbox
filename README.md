@@ -1,4 +1,3 @@
 # infrastructure-sandbox
-Place for all my infrastructure code
 
-Starting with new repository
+Place for all infrastructures as code

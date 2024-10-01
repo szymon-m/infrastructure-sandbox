@@ -1,0 +1,16 @@
+# ccreate 15mb file on vm-01 with :
+# dd if=/dev/zero of=~/data/upload-test-vm-01-to-vm-02 bs=1M count=15
+---
+- hosts: all
+  gather_facts: false
+  vars:
+    upload_item: "~/data/upload-test-vm-01-to-vm-02"
+
+
+  tasks:
+    - name: Push upload_test file from vm-01 to vm-02
+      ansible.posix.synchronize:
+        src: "{{ upload_item }}"
+        dest: "{{ upload_item }}"
+        mode: push
+      delegate_to: vm-01
