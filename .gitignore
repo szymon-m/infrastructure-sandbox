@@ -1,6 +1,6 @@
-.vscode/*
-*.gnupg/*
-*.vagrant/*
+.vscode/
+*.gnupg/
+*.vagrant/
 *.ssh/
 pgp-key.txt
 ubuntu-24-04-server.box
