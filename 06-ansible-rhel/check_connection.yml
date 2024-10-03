@@ -1,0 +1,13 @@
+---
+- hosts: all
+  gather_facts: false
+
+  tasks:
+   - name: "Check connection to {{ inventory_hostname }}"
+     ansible.builtin.ping:
+
+
+# USAGE:
+# ansible-playbook check_connection.yml -i hosts
+# (or)
+# ansible all -m ping -i hosts
