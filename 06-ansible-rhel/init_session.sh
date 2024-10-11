@@ -16,7 +16,7 @@ main() {
                 echo "Virtual Enviroment for Python 3.11 and Ansible 10.4 activated"
         fi
 
-        if [ $CONFIGURED -eq 0 ];  # global env variable configured in .bashrc
+        if [[ $CONFIGURED -eq 0 ]];  # global env variable configured in .bashrc
         then
             # setting networks 
             echo 'Setting networks'
@@ -34,7 +34,13 @@ main() {
             echo -e "nameserver 192.168.1.1" >> /etc/resolv.conf
 
             sudo sed -e 's/127.0.1.1.*//g' -i /etc/hosts
-            echo -e "192.168.1.101 ansible-01\n192.168.1.201 vm-01\n192.168.1.202 vm-02\n192.168.1.203 vm-03\n192.168.1.204 vm-04" >> /etc/hosts
+
+            if [[ $SPECTRUM -eq 1 ]];
+            then
+                echo -e "192.168.1.101 ansible-01\n192.168.1.201 ls-01\n192.168.1.202 ls-02\n192.168.1.211 lsb-01\n192.168.1.212 lsb-02\n192.168.1.51 mls-01\n192.168.1.52 mls-02" >> /etc/hosts
+            else
+                echo -e "192.168.1.101 ansible-01\n192.168.1.201 vm-01\n192.168.1.202 vm-02\n192.168.1.203 vm-03\n192.168.1.204 vm-04" >> /etc/hosts
+            fi
 
             sudo chmod 0644 /etc/hosts
             sudo chmod 0644 /etc/resolv.conf
@@ -43,7 +49,6 @@ main() {
             echo 'Network configurations already done!'
         fi
 
-
-        }
+}
 
 main "$@"
