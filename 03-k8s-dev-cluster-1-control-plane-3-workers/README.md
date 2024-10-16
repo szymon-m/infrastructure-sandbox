@@ -3,13 +3,14 @@
 1. start `vagrant up --provider=virtualbox`
 2. login as atos/student - then use sudo -i - to switch to root: then launch /root/configure.sh on every node
 
-    `./configure.sh`
+    `./setup.sh`
 
 3. launch kubernetes init on master-01:
 
     ! important add : --api-advertise-address=192.168.0.101 (pointing to master-01) - otherwise initialised kubernetes cluster will make use of IP address taken from first network interface - 10.0.2.101 - other nodes will not be able to access this address
 
     (01.10.2024 - remarks) no --apiserver-advertise-address clause needed when using public_network bridged  - check Vagrant file
+    
     `kubeadm init --pod-network-cidr=10.100.0.0/16`
 
 4. install calico network plugin (or other for example cilium) after installing master-01:
