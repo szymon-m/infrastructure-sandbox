@@ -19,7 +19,7 @@ main() {
         if [[ $CONFIGURED -eq 0 ]];  # global env variable configured in .bashrc
         then
             # setting networks 
-            echo 'Setting networks'
+            # echo 'Setting networks'   # echos need to be removed -> 
             sudo nmcli device down enp0s3
             sudo nmcli connection modify System\ enp0s8 connection.id enp0s8
 
@@ -45,8 +45,8 @@ main() {
             sudo chmod 0644 /etc/hosts
             sudo chmod 0644 /etc/resolv.conf
             sed -e 's/export CONFIGURED=0/export CONFIGURED=1/g' -i ~/.bashrc
-        else
-            echo 'Network configurations already done!'
+        # else
+        #     echo 'Network configurations already done!'
         fi
 
 }
