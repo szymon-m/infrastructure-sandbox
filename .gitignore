@@ -2,11 +2,11 @@
 .gnupg/
 .vagrant/
 .ssh/
-06-ansible-rhel-spectrum/
 pgp-key.txt
 ubuntu-24-04-server.box
 ubuntu-24-04-server-k8s.box
 ubuntu-24-04-server-ansible.box
 rhel-86-server-ansible.box
+rhel-86-server-ansible-git.box
 playbook_pull_test.yml
 playbook_push_test.yml
