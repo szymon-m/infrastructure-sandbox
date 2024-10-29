@@ -1,4 +1,10 @@
-### simple k8s cluster - 1 control plane - and 3 workers
+### simple k8s cluster - 1 control plane - and 2 workers
+
+| **Role**         | **FQDN**                   | **IP**           | **OS**         | **RAM** | **CPU** |
+|------------------|----------------------------|------------------|----------------|---------|---------|
+| Master           | master-01                  | 192.168.1.101    | Ubuntu 24.04   | 12G     | 4       |
+| Worker           | worker-01                  | 192.168.1.201    | Ubuntu 24.04   | 2G      | 2       |
+| Worker           | worker-02                  | 192.168.1.202    | Ubuntu 24.04   | 2G      | 2       |
 
 1. start `vagrant up --provider=virtualbox`
 2. login as atos/student - then use sudo -i - to switch to root: then launch /root/configure.sh on every node

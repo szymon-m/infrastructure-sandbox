@@ -42,4 +42,6 @@ In order to make it work with Vagrant:
 - create user vagrant (with password : vagrant ) and copy & paste ssh keys into vagrant user's directory ~/.ssh into file authorized_keys:
     [Vagrant public keys to copy & paste](https://github.com/hashicorp/vagrant/blob/main/keys/vagrant.pub)
 
+- add vagrant user to sudoers - > with `echo 'vagrant ALL=(ALL) NOPASSWD:ALL > /etc/sudoers.d/vagrant` - otherwise it will fail to set custom hostnames for your VMs (unsufficent rights)
+
 - install VirtualBox Guest Additions - to make your VM work with Vagrant [VirtualBox Guest Additions](https://developer.hashicorp.com/vagrant/docs/providers/virtualbox/boxes#additional-software)

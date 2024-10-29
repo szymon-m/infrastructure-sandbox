@@ -1,7 +1,7 @@
 ## creating ubuntu 24-04 server image
 
 1. download Ubuntu 24.04 server
-2. install Virtualbox 
+2. install Virtualbox - version 7.0.0 !!! later do not work with vagrant !!
 3. start new VM as ubuntu-24-04-server 
     - local.dev (domain) 
     - user: atos password: student (instead of 'vboxuser'/'changeme' guest main user)
@@ -10,6 +10,8 @@
 4. after installation restart VM and login as atos (password : student) - then switch to root using : `sudo -i` - password: student
 
     - create sudoers file with `echo 'vagrant ALL=(ALL) NOPASSWD:ALL > /etc/sudoers.d/vagrant` 
+
+        - !!! otherwise you will get fails on vagrant up -> on 'Setting hostname..' step -> vagrant user will not have sufficent rights to perform hostname change
 
 5. configure vagrant user:
 
