@@ -1,0 +1,50 @@
+mkdir -p /etc/rancher/rke2/
+mkdir -p  /var/lib/rancher/rke2/server/manifests/
+
+curl -sfL https://get.rke2.io |INSTALL_RKE2_TYPE="server"  sh - 
+
+# initial HA rke2-server
+cat<<EOF|tee /etc/rancher/rke2/config.yaml
+tls-san:
+  - 192.168.1.51
+  - nginx-lb-01.archipelago.local
+write-kubeconfig-mode: "0600"
+etcd-expose-metrics: true
+cni: cilium
+EOF
+
+systemctl start rke2-server
+
+cat /var/lib/rancher/rke2/server/node-token
+
+echo "export PATH=$PATH:/var/lib/rancher/rke2/bin" >> $HOME/.bashrc
+echo "export KUBECONFIG=/etc/rancher/rke2/rke2.yaml"  >> $HOME/.bashrc
+source ~/.bashrc
+
+# 2nd and 3rd rke2-server in rke2 HA setup
+cat<<EOF|tee /etc/rancher/rke2/config.yaml
+server: https://192.168.1.51:9345
+token: K104a4118e6d11a3407af6322b1cb94890cd123716920e577f85988e40c64c1a4b3::server:a235c3617ebe7f89f27bd626bf487e52
+tls-san:
+  - 192.168.1.51
+  - nginx-lb-01.archipelago.local
+write-kubeconfig-mode: "0644"
+etcd-expose-metrics: true
+cni: cilium
+EOF
+
+
+# for agents only
+mkdir -p /etc/rancher/rke2/
+mkdir -p  /var/lib/rancher/rke2/server/manifests/
+
+
+cat<<EOF|tee /etc/rancher/rke2/config.yaml
+server: https://192.168.1.51:9345 
+token: K104a4118e6d11a3407af6322b1cb94890cd123716920e577f85988e40c64c1a4b3::server:a235c3617ebe7f89f27bd626bf487e52
+EOF
+
+curl -sfL https://get.rke2.io | INSTALL_RKE2_TYPE="agent" sh -
+systemctl start rke2-agent.service
+
+

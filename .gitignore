@@ -12,3 +12,11 @@ rhel-86-server-ansible.box
 rhel-86-server-ansible-git.box
 playbook_pull_test.yml
 playbook_push_test.yml
+sudoers*
+netops*
+spectrum
+spectrum-setup*
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl

@@ -13,7 +13,7 @@ Vagrant.configure(2) do |config|
 
     config.vm.define "master-0#{i}" do |masternode|
 
-      masternode.vm.box               = "ubuntu-24-04-server-k8s-ready"
+      masternode.vm.box               = "ubuntu-24-04-server-ext-storage"
       masternode.vm.box_check_update  = false
       masternode.vm.box_version       = "0"
       masternode.vm.hostname          = "master-0#{i}.example.com"

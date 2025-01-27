@@ -1,0 +1,25 @@
+mkdir -p /etc/rancher/rke2/
+mkdir -p  /var/lib/rancher/rke2/server/manifests/
+
+cat<<EOF| tee /var/lib/rancher/rke2/server/manifests/rke2-ingress-nginx-config.yaml
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-ingress-nginx
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    controller:
+      metrics:
+        service:
+          annotations:
+            prometheus.io/scrape: "true"
+            prometheus.io/port: "10254"
+      config:
+        use-forwarded-headers: "true"
+      allowSnippetAnnotations: "true"
+EOF
+
+
+curl -sfL https://get.rke2.io |INSTALL_RKE2_TYPE=server  sh - 

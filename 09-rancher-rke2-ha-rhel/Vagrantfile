@@ -1,0 +1,93 @@
+Vagrant.configure(2) do |config|
+
+    config.vm.provision "file", source: "etc/nginx/nginx.conf", destination: "~/nginx.conf"
+    config.vm.provision "file", source: "etc/rancher/rke2/config.yaml", destination: "~/config.yaml"
+    config.vm.provision "file", source: "network_configure.sh", destination: "~/network_configure.sh"
+
+    # DNS server
+    DNSServerCount = 0
+  
+    (1..DNSServerCount).each do |i|
+  
+      config.vm.define "nginx-lb-0#{i}" do |dns|
+  
+        dns.vm.box               = "rhel-86-server-ansible"
+        dns.vm.box_check_update  = false
+        dns.vm.box_version       = "0"
+        dns.vm.hostname          = "dns-0#{i}.archipelago.local"
+        #(added 01.10.24) - access via bridged network to host's network - turn off enp0s3 interface - and set default route for enp0s8 - by runinng ./setup.sh (as a root)
+        lb.vm.network "public_network", ip: "192.168.1.1#{i}", bridge: "enp0s8: Intel(R) Ethernet Connection (11) I219-LM"  
+        lb.vm.provider :virtualbox do |v|
+          v.name   = "dns-0#{i}"
+          v.memory = 2048
+          v.cpus   = 2      
+        end
+      end
+    end
+
+    # NGINX Load Balancer Nodes
+    LoadBalancerCount = 1
+  
+    (1..LoadBalancerCount).each do |i|
+  
+      config.vm.define "nginx-lb-0#{i}" do |lb|
+  
+        lb.vm.box               = "rhel-86-server-ansible"
+        lb.vm.box_check_update  = false
+        lb.vm.box_version       = "0"
+        lb.vm.hostname          = "nginx-lb-0#{i}.archipelago.local"
+        #(added 01.10.24) - access via bridged network to host's network - turn off enp0s3 interface - and set default route for enp0s8 - by runinng ./setup.sh (as a root)
+        lb.vm.network "public_network", ip: "192.168.1.5#{i}", bridge: "enp0s8: Intel(R) Ethernet Connection (11) I219-LM"  
+        lb.vm.provider :virtualbox do |v|
+          v.name   = "nginx-lb-0#{i}"
+          v.memory = 2048
+          v.cpus   = 2      
+        end
+      end
+    end
+  
+  
+    # Rancher Server Nodes - control planes and etcd
+    RancherServerCount = 3
+  
+    (1..RancherServerCount).each do |i|
+  
+      config.vm.define "rancher-srv-0#{i}" do |rancherserver|
+  
+        rancherserver.vm.box               = "rhel-86-server-ansible"
+        rancherserver.vm.box_check_update  = false
+        rancherserver.vm.box_version       = "0"
+        rancherserver.vm.hostname          = "rancher-srv-0#{i}.archipelago.local"       
+        #(added 01.10.24) - access via bridged network to host's network - turn off enp0s3 interface - and set default route for enp0s8 - by runinng ./setup.sh (as a root)
+        rancherserver.vm.network "public_network", ip: "192.168.1.10#{i}", bridge: "enp0s8: Intel(R) Ethernet Connection (11) I219-LM"
+        rancherserver.vm.provider :virtualbox do |v|
+          v.name   = "rancher-srv-0#{i}"
+          v.memory = 4096
+          v.cpus   = 4
+        end
+      end
+    end
+  
+  
+    # Rancher Agent Worker Nodes
+    RancherWorkerCount = 2
+  
+    (1..RancherWorkerCount).each do |i|
+  
+      config.vm.define "rancher-worker-0#{i}" do |rancherworker|
+  
+        rancherworker.vm.box               = "rhel-86-server-ansible"
+        rancherworker.vm.box_check_update  = false
+        rancherworker.vm.box_version       = "0"
+        rancherworker.vm.hostname          = "rancher-worker-0#{i}.archipelago.local"
+        #(added 01.10.24) - access via bridged network to host's network - turn off enp0s3 interface - and set default route for enp0s8 - by runinng ./setup.sh (as a root)
+        rancherworker.vm.network "public_network", ip: "192.168.1.20#{i}", bridge: "enp0s8: Intel(R) Ethernet Connection (11) I219-LM"
+        rancherworker.vm.provider :virtualbox do |v|
+          v.name   = "rancher-worker-0#{i}"
+          v.memory = 4096
+          v.cpus   = 4
+        end
+      end
+    end  
+  end
+
